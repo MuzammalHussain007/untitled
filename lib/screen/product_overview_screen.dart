@@ -6,8 +6,6 @@ import 'package:untitled/providers/product_provider.dart';
 import 'package:untitled/widget/app_drawer.dart';
 import 'package:untitled/widget/badge.dart';
 import 'package:untitled/widget/product_grid.dart';
-import 'package:untitled/widget/productitem.dart';
-
 import 'cart_screen.dart';
 
 
@@ -15,8 +13,10 @@ enum FilterOption{
   Favourites,
   SelectAll
 }
+var init = false;
 
 class ProductsOverviewScreen extends StatefulWidget {
+
 
     ProductsOverviewScreen({Key? key}) : super(key: key);
 
@@ -26,11 +26,21 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var showFavouriteOnly=false;
+  var _initShow=true;
   final List<Product> product_list = [
   ];
-
+       @override
+  void didChangeDependencies() {
+    if(_initShow)
+      {
+        context.read<Product_provider>().fetchAndShowProduct();
+      }
+    _initShow=false;
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
+
 
 
     return Scaffold(

@@ -8,6 +8,8 @@ import 'package:untitled/screen/order_screen.dart';
 import 'package:untitled/screen/product_detail_screen.dart';
 import 'package:untitled/screen/product_overview_screen.dart';
 import 'package:untitled/screen/user_product_screen.dart';
+import 'package:untitled/widget/edit_product_screen.dart';
+import 'package:untitled/widget/update_product_screen.dart';
 
 import 'mainstartpage.dart';
 
@@ -35,7 +37,9 @@ class MaterialApps extends StatelessWidget {
           CartScreen.routeName:(context)=>CartScreen(),
           OrderScreen.routeName:(context)=>OrderScreen(),
           UserProductScreen.routeName : (context)=>UserProductScreen(),
-        },
+          EditProductScreen.routeName:  (context)=>EditProductScreen(),
+          UpdateProductScreen.routeName: (context)=>UpdateProductScreen()
+         },
       ),
     );
   }

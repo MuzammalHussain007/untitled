@@ -1,4 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:untitled/Exception/flutter_exception.dart';
 class Product with ChangeNotifier{
    final String id;
    final String product_name;
@@ -18,9 +21,25 @@ class Product with ChangeNotifier{
 
 
 
-  void toggleFavourite()
+  Future<void> toggleFavourite() async
   {
+    final oldFavourite=isFavourite;
     isFavourite=!isFavourite;
+     final  url =  Uri.parse('https://fluttterdummyproject-default-rtdb.firebaseio.com/products/$id.json');
+     try{
+       await http.patch(url,body:jsonEncode(
+           {
+             'isFavorite':isFavourite,
+           }
+       ));
+     }catch(error)
+    {
+      isFavourite = oldFavourite;
+      throw FlutterException('Can not add to Favourite');
+
+    }
+
+
     notifyListeners();
   }
 }

@@ -3,14 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:untitled/modal/products.dart';
 import 'package:untitled/providers/product_provider.dart';
 
-class EditProductScreen extends StatefulWidget {
-  static const routeName = '/edit-product';
+class UpdateProductScreen extends StatefulWidget {
+  static const routeName = '/update-product';
 
   @override
-  _EditProductScreenState createState() => _EditProductScreenState();
+  _UpdateProductScreen createState() => _UpdateProductScreen();
 }
 
-class _EditProductScreenState extends State<EditProductScreen> {
+class _UpdateProductScreen extends State<UpdateProductScreen> {
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
@@ -23,6 +23,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
     product_description: '',
     imageURL: '',
   );
+
+  var initValue = {
+    'id':'',
+    'product_name' : '',
+    'price' : '',
+    'product_description' : '',
+    'imageURL' : ''
+  };
   late  bool _initState=true;
 
   @override
@@ -55,12 +63,36 @@ class _EditProductScreenState extends State<EditProductScreen> {
       print(_editedProduct.product_description);
       print(_editedProduct.price);
       print(_editedProduct.imageURL);
-      context.read<Product_provider>().addProduct(_editedProduct);
     }
+    if (_editedProduct.id !=null) {
+      context.read<Product_provider>().updateProduct(_editedProduct.id,_editedProduct);
+    }else
+      {
+        context.read<Product_provider>().addProduct(_editedProduct);
+      }
 
     Navigator.of(context).pop();
 
   }
+  @override
+  void didChangeDependencies() {
+    if (_initState) {
+      final productid = ModalRoute.of(context)?.settings.arguments as String;
+      _editedProduct = context.read<Product_provider>().findByID(productid);
+      initValue = {
+        'id':_editedProduct.id,
+        'product_name' : _editedProduct.product_name,
+        'price' : _editedProduct.price.toString(),
+        'product_description' : _editedProduct.product_description,
+        'imageURL' : ''
+      };
+      _imageUrlController.text = _editedProduct.imageURL;
+      print(productid);
+    }
+    _initState=false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +112,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           child: ListView(
             children: <Widget>[
               TextFormField(
+                initialValue: initValue['product_name'],
                 decoration: const InputDecoration(labelText: 'Title'),
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
@@ -99,11 +132,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: _editedProduct.price,
                     product_description: _editedProduct.product_description,
                     imageURL: value.toString(),
-                    id: '',
+                      id: _editedProduct.id,
+                      isFavourite: _editedProduct.isFavourite
                   );
                 },
               ),
               TextFormField(
+                initialValue: initValue['price'],
                 decoration: const InputDecoration(labelText: 'Price'),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
@@ -130,11 +165,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: double.parse(value.toString()),
                     product_description: _editedProduct.product_description,
                     imageURL: value.toString(),
-                    id: '',
+                      id: _editedProduct.id,
+                      isFavourite: _editedProduct.isFavourite
                   );
                 },
               ),
               TextFormField(
+                initialValue: initValue['product_description'],
                 decoration: const InputDecoration(labelText: 'Description'),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
@@ -154,7 +191,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     price: _editedProduct.price,
                     product_description: value.toString(),
                     imageURL: value.toString(),
-                    id: '',
+                    id: _editedProduct.id,
+                    isFavourite: _editedProduct.isFavourite
                   );
                 },
               ),
@@ -210,7 +248,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           price: _editedProduct.price,
                           product_description: _editedProduct.product_description,
                           imageURL: value.toString(),
-                          id: '',
+                            id: _editedProduct.id,
+                            isFavourite: _editedProduct.isFavourite
                         );
                       },
                     ),
